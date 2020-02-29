@@ -72,7 +72,7 @@ class App extends Component {
 
   displayFaceBox = (box) => {
         this.setState({box: box})
-        console.log(box);
+        // console.log(box);
     }
 
   onRouteChange = (route)=> {
@@ -91,8 +91,37 @@ class App extends Component {
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input });
     app.models
-      .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
-      .then(response => this.displayFaceBox(this.calculateFaceLocation(response)))
+      .predict(
+       Clarifai.FACE_DETECT_MODEL,
+       this.state.input)
+      .then(response => {
+        if (response){
+          fetch('http://localhost:3001/image', {
+            method: 'put',
+            headers: {'content-type': 'application/json'},
+            body: JSON.stringify({
+              id: this.state.user.id
+            })
+          })
+          .then(response => {
+            console.log(' response', response)
+            console.log('json response', response.json())
+            // 
+          })
+          .then(count => {
+            this.setState(Object.assign(this.state.user,{entries : count}))
+            console.log('count', count);
+            console.log('state', this.state.user);
+              
+            //****  With Spread operator  *****       
+              // const data = {...this.state.user, entries: count}
+              // this.setState({user: {...this.state.user, entries: count}})
+              // console.log('data', data);
+            
+          })
+        }
+        this.displayFaceBox(this.calculateFaceLocation(response))
+      })
       .catch(err => console.log(err))
   };
   render() {
@@ -104,7 +133,7 @@ class App extends Component {
         {route === 'home'
               ?<div>
                   <Logo />
-                  <Rank />
+                  <Rank name= {this.state.user.name} entries={this.state.user.entries} />
                   <ImageLinkedForm
                     onInputChange={this.onInputChange}
                     onButtonSubmit={this.onButtonSubmit}
@@ -113,7 +142,7 @@ class App extends Component {
                 </div>
               :(
                 route === 'signin'
-                ? <Signin onRouteChange={this.onRouteChange}/>
+                ? <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
                 : <Register loadUser = {this.loadUser} onRouteChange={this.onRouteChange}/>
               )
         }
