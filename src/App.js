@@ -91,7 +91,7 @@ class App extends Component {
 
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input });
-      fetch('https://peaceful-earth-60729.herokuapp.com/imageurl', {
+      fetch('https://fast-tundra-64894.herokuapp.com/imageurl', {
         method: 'post',
         headers: {'content-type': 'application/json'},
         body: JSON.stringify({
@@ -101,7 +101,7 @@ class App extends Component {
       .then(response => response.json())
       .then(response => {
         if (response){
-          fetch('https://peaceful-earth-60729.herokuapp.com/image', {
+          fetch('https://fast-tundra-64894.herokuapp.com/image', {
             method: 'put',
             headers: {'content-type': 'application/json'},
             body: JSON.stringify({
