@@ -32,6 +32,8 @@ class Register extends React.Component {
     })
       .then(response => response.json())
       .then(user => {
+      console.log("🚀 ~ file: Resgister.js ~ line 35 ~ Register ~ user", user)
+        
         if(user.id) {
           this.props.loadUser(user)
           console.log('submit', this.state);
